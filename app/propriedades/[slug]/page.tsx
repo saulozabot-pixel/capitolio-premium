@@ -62,25 +62,21 @@ export default async function PropertyPage({ params }: Props) {
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">👥</span>
                   <div>
-                    <p className="font-semibold">Até {property.maxGuests} hóspedes</p>
+                    <p className="font-semibold">até {property.maxGuests} hóspedes</p>
                   </div>
                 </div>
-                {property.area && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">📐</span>
-                    <div>
-                      <p className="font-semibold">{property.area} m²</p>
-                    </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">📐</span>
+                  <div>
+                    <p className="font-semibold">{property.area} m²</p>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Description */}
-              <div className="mb-8 pb-8 border-b">
-                <h2 className="text-2xl font-bold mb-4">Sobre a propriedade</h2>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {property.description}
-                </p>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Sobre a Propriedade</h2>
+                <p className="text-gray-700 leading-relaxed">{property.description}</p>
               </div>
 
               {/* Amenities */}

@@ -55,29 +55,32 @@ export default function AdminPropriedades() {
                   <p className="text-4xl mb-2">🏠</p>
                   <p className="text-sm opacity-80">Fotos em breve</p>
                 </div>
-                <div className="absolute top-3 right-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    property.active ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-                  }`}>
-                    {property.active ? 'Ativa' : 'Inativa'}
-                  </span>
-                </div>
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">{property.name}</h3>
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-xl font-bold">{property.name}</h3>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {property.active ? 'Ativo' : 'Inativo'}
+                  </span>
+                </div>
+
                 <p className="text-gray-600 text-sm mb-4">{property.shortDesc}</p>
 
-                <div className="grid grid-cols-3 gap-3 mb-4 text-center">
-                  <div className="bg-gray-50 p-2 rounded-lg">
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  <div className="bg-gray-50 p-2 rounded-lg text-center">
                     <p className="font-bold text-blue-900">{property.bedrooms}</p>
                     <p className="text-xs text-gray-600">Quartos</p>
                   </div>
-                  <div className="bg-gray-50 p-2 rounded-lg">
+                  <div className="bg-gray-50 p-2 rounded-lg text-center">
+                    <p className="font-bold text-blue-900">{property.bathrooms}</p>
+                    <p className="text-xs text-gray-600">Banheiros</p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded-lg text-center">
                     <p className="font-bold text-blue-900">{property.maxGuests}</p>
                     <p className="text-xs text-gray-600">Hóspedes</p>
                   </div>
-                  <div className="bg-gray-50 p-2 rounded-lg">
+                  <div className="bg-gray-50 p-2 rounded-lg text-center">
                     <p className="font-bold text-blue-900">R$ {(property.pricePerNight / 1000).toFixed(1)}k</p>
                     <p className="text-xs text-gray-600">/noite</p>
                   </div>

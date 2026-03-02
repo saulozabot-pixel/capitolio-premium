@@ -25,7 +25,7 @@ export default function ReservarPage() {
   }
 
   const selectedProperty = properties.find(p => p.id === formData.propertyId)
-  const nights = formData.checkIn && formData.checkOut 
+  const nights = formData.checkIn && formData.checkOut
     ? Math.ceil((new Date(formData.checkOut).getTime() - new Date(formData.checkIn).getTime()) / (1000 * 60 * 60 * 24))
     : 0
 
@@ -76,158 +76,164 @@ export default function ReservarPage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
+        <form onSubmit={handleSubmit}>
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Form Steps */}
-            <div className="lg:col-span-2 bg-white p-8 rounded-2xl shadow-lg">
+            <div className="lg:col-span-2">
               {/* Step 1: Property & Dates */}
               {step === 1 && (
-                <div className="space-y-6">
+                <div className="bg-white p-8 rounded-2xl shadow-lg">
                   <h2 className="text-2xl font-bold mb-6">Escolha a Propriedade e Datas</h2>
-                  
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Propriedade *</label>
-                    <select 
-                      required
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Propriedade *
+                    </label>
+                    <select
                       value={formData.propertyId}
-                      onChange={(e) => setFormData({...formData, propertyId: e.target.value})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                      onChange={(e) => setFormData({ ...formData, propertyId: e.target.value })}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
                     >
                       <option value="">Selecione uma propriedade</option>
-                      {properties.map(prop => (
-                        <option key={prop.id} value={prop.id}>
-                          {prop.name} - R$ {prop.pricePerNight.toLocaleString('pt-BR')}/noite
+                      {properties.map(p => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} - R$ {p.pricePerNight.toLocaleString('pt-BR')}/noite
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Check-in *</label>
-                      <input 
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Check-in *
+                      </label>
+                      <input
                         type="date"
-                        required
                         value={formData.checkIn}
-                        onChange={(e) => setFormData({...formData, checkIn: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                        onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Check-out *</label>
-                      <input 
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Check-out *
+                      </label>
+                      <input
                         type="date"
-                        required
                         value={formData.checkOut}
-                        onChange={(e) => setFormData({...formData, checkOut: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                        onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Número de Hóspedes *</label>
-                    <select 
-                      required
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Número de Hóspedes *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={selectedProperty?.maxGuests || 20}
                       value={formData.guests}
-                      onChange={(e) => setFormData({...formData, guests: parseInt(e.target.value)})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                    >
-                      {[1,2,3,4,5,6,7,8,9,10,11,12].map(num => (
-                        <option key={num} value={num}>{num} {num === 1 ? 'hóspede' : 'hóspedes'}</option>
-                      ))}
-                    </select>
+                      onChange={(e) => setFormData({ ...formData, guests: parseInt(e.target.value) })}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
                   </div>
 
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setStep(2)}
-                    className="w-full bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition"
+                    disabled={!formData.propertyId || !formData.checkIn || !formData.checkOut}
+                    className="w-full bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Continuar
+                    Continuar →
                   </button>
                 </div>
               )}
 
               {/* Step 2: Guest Info */}
               {step === 2 && (
-                <div className="space-y-6">
+                <div className="bg-white p-8 rounded-2xl shadow-lg">
                   <h2 className="text-2xl font-bold mb-6">Seus Dados</h2>
-                  
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Nome Completo *</label>
-                    <input 
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                      placeholder="João Silva"
-                    />
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Email *</label>
-                      <input 
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Nome Completo *</label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">E-mail *</label>
+                      <input
                         type="email"
-                        required
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                        placeholder="joao@email.com"
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Telefone *</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2">Telefone *</label>
-                      <input 
-                        type="tel"
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">CPF *</label>
+                      <input
+                        type="text"
+                        value={formData.document}
+                        onChange={(e) => setFormData({ ...formData, document: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                        placeholder="(00) 00000-0000"
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">CPF/CNPJ *</label>
-                    <input 
-                      type="text"
-                      required
-                      value={formData.document}
-                      onChange={(e) => setFormData({...formData, document: e.target.value})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                      placeholder="000.000.000-00"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-semibold mb-2">Observações</label>
-                    <textarea 
-                      rows={4}
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Observações</label>
+                    <textarea
                       value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                      placeholder="Alguma informação adicional ou pedido especial?"
-                    ></textarea>
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      rows={3}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Alguma necessidade especial ou pedido?"
+                    />
                   </div>
 
                   <div className="flex gap-4">
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setStep(1)}
                       className="flex-1 bg-gray-200 text-gray-800 py-4 rounded-full font-semibold hover:bg-gray-300 transition"
                     >
                       Voltar
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setStep(3)}
-                      className="flex-1 bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition"
+                      disabled={!formData.name || !formData.email || !formData.phone}
+                      className="flex-1 bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Continuar
+                      Continuar →
                     </button>
                   </div>
                 </div>
@@ -235,54 +241,44 @@ export default function ReservarPage() {
 
               {/* Step 3: Confirmation */}
               {step === 3 && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold mb-6">Confirme sua Reserva</h2>
-                  
-                  <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-                    <div>
-                      <span className="text-gray-600">Propriedade:</span>
-                      <p className="font-semibold">{selectedProperty?.name}</p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-gray-600">Check-in:</span>
-                        <p className="font-semibold">{formData.checkIn ? new Date(formData.checkIn).toLocaleDateString('pt-BR') : '-'}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Check-out:</span>
-                        <p className="font-semibold">{formData.checkOut ? new Date(formData.checkOut).toLocaleDateString('pt-BR') : '-'}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Hóspedes:</span>
-                      <p className="font-semibold">{formData.guests} {formData.guests === 1 ? 'pessoa' : 'pessoas'}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Nome:</span>
-                      <p className="font-semibold">{formData.name}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Email:</span>
-                      <p className="font-semibold">{formData.email}</p>
-                    </div>
-                  </div>
+                <div className="bg-white p-8 rounded-2xl shadow-lg">
+                  <h2 className="text-2xl font-bold mb-6">Confirmar Reserva</h2>
 
-                  <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg">
-                    <p className="text-blue-900 font-semibold mb-2">🔒 Pagamento Seguro</p>
-                    <p className="text-blue-800 text-sm">
-                      A integração de pagamento será habilitada em breve. Por enquanto, nossa equipe entrará em contato para finalizar a reserva.
-                    </p>
+                  <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                    <h3 className="font-bold text-lg mb-4">Resumo</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Propriedade:</span>
+                        <span className="font-semibold">{selectedProperty?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Check-in:</span>
+                        <span className="font-semibold">{formData.checkIn}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Check-out:</span>
+                        <span className="font-semibold">{formData.checkOut}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Hóspedes:</span>
+                        <span className="font-semibold">{formData.guests}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Nome:</span>
+                        <span className="font-semibold">{formData.name}</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex gap-4">
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setStep(2)}
                       className="flex-1 bg-gray-200 text-gray-800 py-4 rounded-full font-semibold hover:bg-gray-300 transition"
                     >
                       Voltar
                     </button>
-                    <button 
+                    <button
                       type="submit"
                       className="flex-1 bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition"
                     >
@@ -297,7 +293,7 @@ export default function ReservarPage() {
             <div className="lg:col-span-1">
               <div className="bg-white p-6 rounded-2xl shadow-lg sticky top-4">
                 <h3 className="text-xl font-bold mb-4">Resumo da Reserva</h3>
-                
+
                 {selectedProperty ? (
                   <>
                     <div className="mb-4 pb-4 border-b">

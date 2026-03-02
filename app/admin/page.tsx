@@ -1,7 +1,6 @@
 ﻿import Link from 'next/link'
 
 export default function AdminDashboard() {
-  // Mock data
   const stats = {
     totalReservas: 12,
     reservasHoje: 2,
@@ -70,9 +69,9 @@ export default function AdminDashboard() {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600 text-sm">Faturamento Mês</p>
-                <p className="text-3xl font-bold text-blue-900">
-                  R$ {stats.faturamentoMes.toLocaleString('pt-BR')}
+                <p className="text-gray-600 text-sm">Faturamento do Mês</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  R$ {(stats.faturamentoMes / 1000).toFixed(0)}k
                 </p>
               </div>
               <div className="text-4xl">💰</div>
@@ -83,54 +82,60 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Ocupação Média</p>
-                <p className="text-3xl font-bold text-purple-600">{stats.ocupacaoMedia}%</p>
+                <p className="text-3xl font-bold text-orange-600">{stats.ocupacaoMedia}%</p>
               </div>
               <div className="text-4xl">📊</div>
             </div>
           </div>
         </div>
 
-        {/* Recent Bookings */}
-        <div className="bg-white rounded-lg shadow mb-8">
+        {/* Recent Reservations */}
+        <div className="bg-white rounded-xl shadow mb-8">
           <div className="p-6 border-b">
-            <h2 className="text-xl font-bold">Últimas Reservas</h2>
+            <h2 className="text-xl font-bold">Reservas Recentes</h2>
           </div>
-          <div className="p-6 overflow-x-auto">
+          <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="text-left text-gray-600 border-b">
-                  <th className="pb-3">Hóspede</th>
-                  <th className="pb-3">Propriedade</th>
-                  <th className="pb-3">Check-in</th>
-                  <th className="pb-3">Check-out</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3">Valor</th>
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Hóspede</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Propriedade</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Check-in</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Check-out</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Status</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Valor</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b">
-                  <td className="py-4">João Silva</td>
-                  <td>Rancho à Beira da Represa</td>
-                  <td>15/03/2026</td>
-                  <td>18/03/2026</td>
-                  <td><span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Confirmada</span></td>
-                  <td className="font-semibold">R$ 8.000</td>
+                  <td className="py-4 px-6">João Silva</td>
+                  <td className="px-6">Rancho à Beira da Represa</td>
+                  <td className="px-6">15/03/2026</td>
+                  <td className="px-6">18/03/2026</td>
+                  <td className="px-6">
+                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Confirmada</span>
+                  </td>
+                  <td className="px-6 font-semibold">R$ 8.000</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-4">Maria Santos</td>
-                  <td>Casa Premium Capitólio</td>
-                  <td>20/03/2026</td>
-                  <td>22/03/2026</td>
-                  <td><span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Pendente</span></td>
-                  <td className="font-semibold">R$ 4.800</td>
+                  <td className="py-4 px-6">Maria Santos</td>
+                  <td className="px-6">Casa Premium Capitólio</td>
+                  <td className="px-6">20/03/2026</td>
+                  <td className="px-6">22/03/2026</td>
+                  <td className="px-6">
+                    <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Pendente</span>
+                  </td>
+                  <td className="px-6 font-semibold">R$ 4.800</td>
                 </tr>
                 <tr>
-                  <td className="py-4">Carlos Oliveira</td>
-                  <td>Rancho à Beira da Represa</td>
-                  <td>25/03/2026</td>
-                  <td>30/03/2026</td>
-                  <td><span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Confirmada</span></td>
-                  <td className="font-semibold">R$ 13.000</td>
+                  <td className="py-4 px-6">Carlos Oliveira</td>
+                  <td className="px-6">Rancho à Beira da Represa</td>
+                  <td className="px-6">25/03/2026</td>
+                  <td className="px-6">30/03/2026</td>
+                  <td className="px-6">
+                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Confirmada</span>
+                  </td>
+                  <td className="px-6 font-semibold">R$ 13.000</td>
                 </tr>
               </tbody>
             </table>

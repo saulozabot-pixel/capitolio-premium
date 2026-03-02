@@ -107,57 +107,52 @@ export default function AdminReservas() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Gerenciar Reservas</h2>
-          <div className="flex gap-3">
-            <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm" title="Filtrar por status">
-              <option value="">Todos os status</option>
-              <option value="confirmed">Confirmadas</option>
-              <option value="pending">Pendentes</option>
-              <option value="cancelled">Canceladas</option>
-            </select>
-          </div>
+          <button className="bg-blue-900 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition text-sm font-semibold">
+            + Nova Reserva
+          </button>
         </div>
 
-        {/* Stats Row */}
+        {/* Stats */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow text-center">
             <p className="text-2xl font-bold text-blue-900">{mockReservas.length}</p>
-            <p className="text-gray-600 text-sm">Total</p>
+            <p className="text-sm text-gray-600">Total</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow text-center">
             <p className="text-2xl font-bold text-green-600">
               {mockReservas.filter(r => r.status === 'confirmed').length}
             </p>
-            <p className="text-gray-600 text-sm">Confirmadas</p>
+            <p className="text-sm text-gray-600">Confirmadas</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow text-center">
             <p className="text-2xl font-bold text-yellow-600">
               {mockReservas.filter(r => r.status === 'pending').length}
             </p>
-            <p className="text-gray-600 text-sm">Pendentes</p>
+            <p className="text-sm text-gray-600">Pendentes</p>
           </div>
           <div className="bg-white p-4 rounded-lg shadow text-center">
-            <p className="text-2xl font-bold text-blue-900">
+            <p className="text-2xl font-bold text-purple-600">
               R$ {mockReservas.reduce((acc, r) => acc + r.totalPrice, 0).toLocaleString('pt-BR')}
             </p>
-            <p className="text-gray-600 text-sm">Faturamento Total</p>
+            <p className="text-sm text-gray-600">Faturamento</p>
           </div>
         </div>
 
-        {/* Reservations Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        {/* Table */}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
-                <tr className="text-left text-gray-600 text-sm">
-                  <th className="px-6 py-4">Hóspede</th>
-                  <th className="px-6 py-4">Propriedade</th>
-                  <th className="px-6 py-4">Check-in</th>
-                  <th className="px-6 py-4">Check-out</th>
-                  <th className="px-6 py-4">Hóspedes</th>
-                  <th className="px-6 py-4">Valor</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Pagamento</th>
-                  <th className="px-6 py-4">Ações</th>
+                <tr>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Hóspede</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Propriedade</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Check-in</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Check-out</th>
+                  <th className="text-center px-6 py-3 text-sm font-semibold text-gray-600">Hóspedes</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Valor</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Status</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Pagamento</th>
+                  <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Ações</th>
                 </tr>
               </thead>
               <tbody>
