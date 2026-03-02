@@ -1,18 +1,18 @@
-﻿// Dados das propriedades - CapitÃ³lio Premium
+﻿// Dados das propriedades - Capitólio Premium
 
 export const properties = [
   {
     id: "rancho-beira-represa",
-    name: "Rancho Ã  Beira da Represa",
+    name: "Rancho à Beira da Represa",
     slug: "rancho-beira-represa",
-    shortDesc: "MansÃ£o exclusiva com acesso direto Ã  represa",
+    shortDesc: "Mansão exclusiva com acesso direto à represa",
     description: `
-      O Rancho Ã  Beira da Represa Ã© uma mansÃ£o exclusiva que oferece a melhor experiÃªncia 
-      em CapitÃ³lio. Com acesso direto Ã  Ã¡gua, deck privativo e vista panorÃ¢mica dos cÃ¢nions, 
-      esta propriedade Ã© perfeita para quem busca luxo e tranquilidade.
+      O Rancho à Beira da Represa é uma mansão exclusiva que oferece a melhor experiência 
+      em Capitólio. Com acesso direto à água, deck privativo e vista panorâmica dos cânions, 
+      esta propriedade é perfeita para quem busca luxo e tranquilidade.
     `,
-    address: "CapitÃ³lio, MG",
-    city: "CapitÃ³lio",
+    address: "Capitólio, MG",
+    city: "Capitólio",
     state: "MG",
     bedrooms: 5,
     bathrooms: 6,
@@ -21,7 +21,7 @@ export const properties = [
     pricePerNight: 2500,
     cleaningFee: 500,
     amenities: [
-      "Acesso direto Ã  represa",
+      "Acesso direto à represa",
       "Marina privativa",
       "Piscina aquecida",
       "Deck exclusivo",
@@ -32,7 +32,7 @@ export const properties = [
       "Ar condicionado",
       "Roupa de cama e banho",
       "Estacionamento privativo",
-      "Vista panorÃ¢mica dos cÃ¢nions"
+      "Vista panorâmica dos cânions"
     ],
     images: [
       "/images/rancho-beira-represa/exterior-01.jpg",
@@ -49,15 +49,16 @@ export const properties = [
   },
   {
     id: "casa-proxima",
-    name: "Casa Premium CapitÃ³lio",
+    name: "Casa Premium Capitólio",
     slug: "casa-premium-capitolio",
-    shortDesc: "Casa moderna prÃ³xima Ã  represa com todo conforto",
+    shortDesc: "Casa moderna próxima à represa com todo conforto",
     description: `
-      A Casa Premium CapitÃ³lio Ã© uma propriedade moderna e confortÃ¡vel, localizada 
-      a poucos minutos da represa.
+      A Casa Premium Capitólio é uma propriedade moderna e confortável, localizada 
+      a poucos minutos da represa. Com piscina aquecida, área gourmet completa e 
+      decoração sofisticada, é ideal para grupos que buscam conforto e lazer.
     `,
-    address: "CapitÃ³lio, MG",
-    city: "CapitÃ³lio",
+    address: "Capitólio, MG",
+    city: "Capitólio",
     state: "MG",
     bedrooms: 4,
     bathrooms: 5,
@@ -67,9 +68,13 @@ export const properties = [
     cleaningFee: 400,
     amenities: [
       "Piscina aquecida",
-      "Ãrea gourmet completa",
+      "Área gourmet completa",
       "Churrasqueira",
       "Wi-Fi de alta velocidade",
+      "Ar condicionado",
+      "TV a cabo",
+      "Roupa de cama e banho",
+      "Estacionamento privativo"
     ],
     images: [
       "/images/casa-proxima/exterior-01.jpg",

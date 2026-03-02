@@ -21,7 +21,7 @@ export default function ReservarPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Reserva serÃ¡ processada! (IntegraÃ§Ã£o de pagamento em breve)')
+    alert('Reserva será processada! (Integração de pagamento em breve)')
   }
 
   const selectedProperty = properties.find(p => p.id === formData.propertyId)
@@ -39,10 +39,10 @@ export default function ReservarPage() {
       <header className="bg-white shadow-sm">
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-blue-900">
-            CapitÃ³lio Premium
+            Capitólio Premium
           </Link>
           <Link href="/" className="text-gray-700 hover:text-blue-900">
-            â† Voltar para Home
+            ← Voltar para Home
           </Link>
         </nav>
       </header>
@@ -71,7 +71,7 @@ export default function ReservarPage() {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step >= 3 ? 'bg-blue-900 text-white' : 'bg-gray-300'}`}>
                 3
               </div>
-              <span className="ml-2 hidden sm:inline">ConfirmaÃ§Ã£o</span>
+              <span className="ml-2 hidden sm:inline">Confirmação</span>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function ReservarPage() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-2">NÃºmero de HÃ³spedes *</label>
+                    <label className="block text-gray-700 font-semibold mb-2">Número de Hóspedes *</label>
                     <select 
                       required
                       value={formData.guests}
@@ -134,7 +134,7 @@ export default function ReservarPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                     >
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map(num => (
-                        <option key={num} value={num}>{num} {num === 1 ? 'hÃ³spede' : 'hÃ³spedes'}</option>
+                        <option key={num} value={num}>{num} {num === 1 ? 'hóspede' : 'hóspedes'}</option>
                       ))}
                     </select>
                   </div>
@@ -162,7 +162,7 @@ export default function ReservarPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                      placeholder="JoÃ£o Silva"
+                      placeholder="João Silva"
                     />
                   </div>
 
@@ -204,13 +204,13 @@ export default function ReservarPage() {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-2">ObservaÃ§Ãµes</label>
+                    <label className="block text-gray-700 font-semibold mb-2">Observações</label>
                     <textarea 
                       rows={4}
                       value={formData.notes}
                       onChange={(e) => setFormData({...formData, notes: e.target.value})}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                      placeholder="Alguma informaÃ§Ã£o adicional ou pedido especial?"
+                      placeholder="Alguma informação adicional ou pedido especial?"
                     ></textarea>
                   </div>
 
@@ -246,15 +246,15 @@ export default function ReservarPage() {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <span className="text-gray-600">Check-in:</span>
-                        <p className="font-semibold">{new Date(formData.checkIn).toLocaleDateString('pt-BR')}</p>
+                        <p className="font-semibold">{formData.checkIn ? new Date(formData.checkIn).toLocaleDateString('pt-BR') : '-'}</p>
                       </div>
                       <div>
                         <span className="text-gray-600">Check-out:</span>
-                        <p className="font-semibold">{new Date(formData.checkOut).toLocaleDateString('pt-BR')}</p>
+                        <p className="font-semibold">{formData.checkOut ? new Date(formData.checkOut).toLocaleDateString('pt-BR') : '-'}</p>
                       </div>
                     </div>
                     <div>
-                      <span className="text-gray-600">HÃ³spedes:</span>
+                      <span className="text-gray-600">Hóspedes:</span>
                       <p className="font-semibold">{formData.guests} {formData.guests === 1 ? 'pessoa' : 'pessoas'}</p>
                     </div>
                     <div>
@@ -268,9 +268,9 @@ export default function ReservarPage() {
                   </div>
 
                   <div className="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg">
-                    <p className="text-blue-900 font-semibold mb-2">ðŸ” Pagamento Seguro</p>
+                    <p className="text-blue-900 font-semibold mb-2">🔒 Pagamento Seguro</p>
                     <p className="text-blue-800 text-sm">
-                      A integraÃ§Ã£o de pagamento serÃ¡ habilitada em breve. Por enquanto, nossa equipe entrarÃ¡ em contato para finalizar a reserva.
+                      A integração de pagamento será habilitada em breve. Por enquanto, nossa equipe entrará em contato para finalizar a reserva.
                     </p>
                   </div>
 
