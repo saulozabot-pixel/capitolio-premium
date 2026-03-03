@@ -1,13 +1,17 @@
 ﻿'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { properties } from '@/lib/properties-data'
 
-export default function ReservarPage() {
+function ReservarForm() {
+  const searchParams = useSearchParams()
+  const propertyParam = searchParams.get('property') || ''
+
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
-    propertyId: '',
+    propertyId: propertyParam,
     checkIn: '',
     checkOut: '',
     guests: 1,
@@ -19,9 +23,29 @@ export default function ReservarPage() {
     notes: ''
   })
 
+  // Sync if URL param changes after mount
+  useEffect(() => {
+    if (propertyParam) {
+      setFormData(prev => ({ ...prev, propertyId: propertyParam }))
+    }
+  }, [propertyParam])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Reserva será processada! (Integração de pagamento em breve)')
+    // Build WhatsApp message with reservation details
+    const prop = properties.find(p => p.id === formData.propertyId)
+    const msg = encodeURIComponent(
+      `Olá! Gostaria de confirmar minha reserva:\n\n` +
+      `🏡 Propriedade: ${prop?.name || formData.propertyId}\n` +
+      `📅 Check-in: ${formData.checkIn}\n` +
+      `📅 Check-out: ${formData.checkOut}\n` +
+      `👥 Hóspedes: ${formData.guests}\n` +
+      `👤 Nome: ${formData.name}\n` +
+      `📧 E-mail: ${formData.email}\n` +
+      `📱 Telefone: ${formData.phone}\n` +
+      (formData.notes ? `📝 Obs: ${formData.notes}` : '')
+    )
+    window.open(`https://wa.me/5535999999999?text=${msg}`, '_blank')
   }
 
   const selectedProperty = properties.find(p => p.id === formData.propertyId)
@@ -332,5 +356,17 @@ export default function ReservarPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function ReservarPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <ReservarForm />
+    </Suspense>
   )
 }

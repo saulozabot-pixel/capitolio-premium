@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import AdminNav from '@/components/AdminNav'
 import Link from 'next/link'
 import { properties as defaultProperties } from '@/lib/properties-data'
@@ -53,6 +53,33 @@ function emptyProperty(): Property {
   }
 }
 
+// Compress image using Canvas API
+async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let { width, height } = img
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width)
+          width = maxWidth
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', quality))
+      }
+      img.onerror = reject
+      img.src = e.target?.result as string
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 function PropertyModal({
   property,
   title,
@@ -66,23 +93,67 @@ function PropertyModal({
 }) {
   const [form, setForm] = useState<Property>({ ...property })
   const [amenitiesText, setAmenitiesText] = useState(property.amenities.join('\n'))
-  const [imagesText, setImagesText] = useState(property.images.join('\n'))
+  // URL-based images (one per line)
+  const [urlImagesText, setUrlImagesText] = useState(
+    property.images.filter(img => img.startsWith('http')).join('\n')
+  )
+  // Uploaded images (base64 data URLs)
+  const [uploadedImages, setUploadedImages] = useState<string[]>(
+    property.images.filter(img => img.startsWith('data:'))
+  )
   const [driveText, setDriveText] = useState(property.googleDriveLinks.join('\n'))
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const set = (field: keyof Property, value: unknown) =>
     setForm(prev => ({ ...prev, [field]: value }))
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    setUploading(true)
+    setUploadError('')
+
+    try {
+      const compressed = await Promise.all(files.map(f => compressImage(f)))
+      setUploadedImages(prev => [...prev, ...compressed])
+    } catch {
+      setUploadError('Erro ao processar imagens. Tente novamente.')
+    } finally {
+      setUploading(false)
+      // Reset file input so same files can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const removeUploadedImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const removeUrlImage = (index: number) => {
+    const lines = urlImagesText.split('\n').filter(u => u.trim())
+    lines.splice(index, 1)
+    setUrlImagesText(lines.join('\n'))
+  }
+
   const handleSave = () => {
+    const urlImages = urlImagesText.split('\n').map(s => s.trim()).filter(Boolean)
+    const allImages = [...urlImages, ...uploadedImages]
+
     const updated: Property = {
       ...form,
       amenities: amenitiesText.split('\n').map(s => s.trim()).filter(Boolean),
-      images: imagesText.split('\n').map(s => s.trim()).filter(Boolean),
+      images: allImages,
       googleDriveLinks: driveText.split('\n').map(s => s.trim()).filter(Boolean),
       slug: form.slug || form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
       id: form.id || form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
     }
     onSave(updated)
   }
+
+  const urlImageList = urlImagesText.split('\n').filter(u => u.trim().startsWith('http'))
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
@@ -192,31 +263,122 @@ function PropertyModal({
             </div>
           </div>
 
-          {/* Fotos */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              URLs das Fotos <span className="text-gray-400 font-normal">(uma por linha)</span>
-            </label>
-            <textarea
-              value={imagesText}
-              onChange={e => setImagesText(e.target.value)}
-              rows={4}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://images.unsplash.com/photo-...&#10;https://drive.google.com/..."
-            />
-            <p className="text-xs text-gray-400 mt-1">Cole URLs de imagens (Unsplash, Google Drive, etc.)</p>
-            {/* Preview das imagens */}
-            {imagesText.split('\n').filter(u => u.trim().startsWith('http')).length > 0 && (
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {imagesText.split('\n').filter(u => u.trim().startsWith('http')).slice(0, 4).map((url, i) => (
-                  <img
-                    key={i}
-                    src={url.trim()}
-                    alt={`preview ${i + 1}`}
-                    className="w-20 h-16 object-cover rounded-lg border"
-                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                  />
-                ))}
+          {/* ===== SEÇÃO DE FOTOS ===== */}
+          <div className="border border-gray-200 rounded-xl p-4 space-y-4">
+            <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+              📸 Fotos da Propriedade
+            </h3>
+
+            {/* Upload do Computador */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                📁 Selecionar do Computador
+              </label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-blue-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+              >
+                {uploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-sm text-blue-600">Processando imagens...</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-3xl">🖼️</span>
+                    <p className="text-sm font-semibold text-blue-700">Clique para abrir o explorador de arquivos</p>
+                    <p className="text-xs text-gray-400">JPG, PNG, WEBP — múltiplas imagens permitidas</p>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+              {uploadError && (
+                <p className="text-xs text-red-500 mt-1">{uploadError}</p>
+              )}
+            </div>
+
+            {/* Preview das imagens carregadas do computador */}
+            {uploadedImages.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-gray-600 mb-2">
+                  ✅ {uploadedImages.length} imagem(ns) do computador:
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {uploadedImages.map((img, i) => (
+                    <div key={i} className="relative group">
+                      <img
+                        src={img}
+                        alt={`upload ${i + 1}`}
+                        className="w-full h-24 object-cover rounded-lg border"
+                      />
+                      <button
+                        onClick={() => removeUploadedImage(i)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                        title="Remover"
+                      >
+                        ×
+                      </button>
+                      <span className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1 rounded">
+                        {i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* URLs de imagens externas */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                🔗 URLs de Imagens Externas <span className="text-gray-400 font-normal">(uma por linha)</span>
+              </label>
+              <textarea
+                value={urlImagesText}
+                onChange={e => setUrlImagesText(e.target.value)}
+                rows={3}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="https://images.unsplash.com/photo-...&#10;https://drive.google.com/..."
+              />
+              <p className="text-xs text-gray-400 mt-1">Cole URLs de imagens (Unsplash, Google Drive, etc.)</p>
+
+              {/* Preview das imagens por URL */}
+              {urlImageList.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  {urlImageList.map((url, i) => (
+                    <div key={i} className="relative group">
+                      <img
+                        src={url.trim()}
+                        alt={`url ${i + 1}`}
+                        className="w-full h-24 object-cover rounded-lg border"
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                      <button
+                        onClick={() => removeUrlImage(i)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                        title="Remover"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Resumo total de imagens */}
+            {(uploadedImages.length + urlImageList.length) > 0 && (
+              <div className="bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700">
+                📊 Total: <strong>{uploadedImages.length + urlImageList.length}</strong> imagem(ns) —
+                {uploadedImages.length > 0 && ` ${uploadedImages.length} do computador`}
+                {uploadedImages.length > 0 && urlImageList.length > 0 && ' +'}
+                {urlImageList.length > 0 && ` ${urlImageList.length} por URL`}
               </div>
             )}
           </div>
@@ -224,7 +386,7 @@ function PropertyModal({
           {/* Google Drive Links */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Links do Google Drive <span className="text-gray-400 font-normal">(um por linha)</span>
+              📁 Links do Google Drive <span className="text-gray-400 font-normal">(um por linha)</span>
             </label>
             <textarea
               value={driveText}
@@ -293,7 +455,8 @@ function PropertyModal({
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 bg-blue-900 text-white py-2.5 rounded-full text-sm font-semibold hover:bg-blue-800 transition"
+            disabled={!form.name}
+            className="flex-1 bg-blue-900 text-white py-2.5 rounded-full text-sm font-semibold hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Salvar Alterações
           </button>
@@ -324,13 +487,19 @@ export default function AdminPropriedades() {
   }, [])
 
   const saveToStorage = (updated: Property[]) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+    } catch {
+      // localStorage quota exceeded (large base64 images)
+      showToast('⚠️ Armazenamento cheio. Reduza o número de imagens do computador.')
+      return
+    }
     setProperties(updated)
   }
 
   const showToast = (msg: string) => {
     setToast(msg)
-    setTimeout(() => setToast(''), 3000)
+    setTimeout(() => setToast(''), 3500)
   }
 
   const handleEdit = (property: Property) => {
@@ -365,7 +534,7 @@ export default function AdminPropriedades() {
 
   const getImageSrc = (property: Property) => {
     const firstImage = property.images?.[0]
-    if (firstImage?.startsWith('http')) return firstImage
+    if (firstImage?.startsWith('http') || firstImage?.startsWith('data:')) return firstImage
     if (property.id === 'rancho-beira-represa') {
       return 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80'
     }
@@ -378,7 +547,9 @@ export default function AdminPropriedades() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed top-20 right-4 z-50 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium animate-pulse">
+        <div className={`fixed top-20 right-4 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium transition-all ${
+          toast.startsWith('⚠️') ? 'bg-yellow-500 text-white' : 'bg-green-600 text-white'
+        }`}>
           {toast}
         </div>
       )}
@@ -420,6 +591,12 @@ export default function AdminPropriedades() {
                     </span>
                   )}
                 </div>
+                {/* Image count badge */}
+                {property.images?.length > 0 && (
+                  <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                    📸 {property.images.length}
+                  </div>
+                )}
               </div>
 
               <div className="p-5">
