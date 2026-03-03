@@ -215,10 +215,13 @@ export default function PropertyPage() {
             <div className="lg:col-span-1">
               <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg sticky top-24">
                 <div className="mb-6">
-                  <span className="text-3xl font-bold text-blue-900">
-                    R$ {property.pricePerNight.toLocaleString('pt-BR')}
-                  </span>
-                  <span className="text-gray-600">/pessoa/noite</span>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Diárias</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold text-blue-900">
+                      R$ {property.pricePerNight.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-gray-600 text-sm">/pessoa</span>
+                  </div>
                 </div>
 
                 {property.cleaningFee > 0 && (

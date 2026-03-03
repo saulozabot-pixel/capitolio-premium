@@ -157,8 +157,9 @@ export default function HomePage() {
                     {property.badge}
                   </span>
                   <div className="absolute bottom-4 left-4 text-white">
-                    <p className="text-2xl font-bold">R$ {property.pricePerNight.toLocaleString('pt-BR')}</p>
-                    <p className="text-sm opacity-80">/pessoa/noite</p>
+                    <p className="text-xs opacity-70 uppercase tracking-wide">Diárias</p>
+                    <p className="text-2xl font-bold">R$ {property.pricePerNight.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    <p className="text-sm opacity-80">/pessoa</p>
                   </div>
                 </div>
 
