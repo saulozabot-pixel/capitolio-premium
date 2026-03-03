@@ -392,20 +392,6 @@ function PropertyModal({
             )}
           </div>
 
-          {/* Google Drive Links */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              📁 Links do Google Drive <span className="text-gray-400 font-normal">(um por linha)</span>
-            </label>
-            <textarea
-              value={driveText}
-              onChange={e => setDriveText(e.target.value)}
-              rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://drive.google.com/drive/folders/..."
-            />
-          </div>
-
           {/* Comodidades */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
