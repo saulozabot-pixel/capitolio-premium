@@ -641,24 +641,6 @@ export default function AdminPropriedades() {
                   </div>
                 </div>
 
-                {/* Google Drive Links */}
-                {property.googleDriveLinks?.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs text-gray-500 mb-2 font-medium">Links do Google Drive:</p>
-                    {property.googleDriveLinks.map((link, i) => (
-                      <a
-                        key={i}
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block text-xs text-blue-600 hover:underline truncate mb-1"
-                      >
-                        📁 Drive {i + 1}: {link.split('/').pop()}
-                      </a>
-                    ))}
-                  </div>
-                )}
-
                 {/* Actions */}
                 <div className="flex gap-3">
                   <Link
