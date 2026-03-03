@@ -78,7 +78,7 @@ export default function PropertyPage() {
     )
   }
 
-  const images = property.images?.filter(img => img.startsWith('http')) || []
+  const images = property.images?.filter(img => img.startsWith('http') || img.startsWith('data:')) || []
   const hasImages = images.length > 0
 
   return (
