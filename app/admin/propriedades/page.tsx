@@ -92,16 +92,16 @@ function PropertyModal({
   onClose: () => void
 }) {
   const [form, setForm] = useState<Property>({ ...property })
-  const [amenitiesText, setAmenitiesText] = useState(property.amenities.join('\n'))
+  const [amenitiesText, setAmenitiesText] = useState((property.amenities || []).join('\n'))
   // URL-based images (one per line)
   const [urlImagesText, setUrlImagesText] = useState(
-    property.images.filter(img => img.startsWith('http')).join('\n')
+    (property.images || []).filter(img => img.startsWith('http')).join('\n')
   )
   // Uploaded images (base64 data URLs)
   const [uploadedImages, setUploadedImages] = useState<string[]>(
-    property.images.filter(img => img.startsWith('data:'))
+    (property.images || []).filter(img => img.startsWith('data:'))
   )
-  const [driveText, setDriveText] = useState(property.googleDriveLinks.join('\n'))
+  const [driveText, setDriveText] = useState((property.googleDriveLinks || []).join('\n'))
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -477,7 +477,15 @@ export default function AdminPropriedades() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
-        setProperties(JSON.parse(saved))
+        const parsed = JSON.parse(saved)
+        // Ensure all properties have required array fields
+        const normalized = parsed.map((p: Partial<Property>) => ({
+          ...p,
+          amenities: p.amenities || [],
+          images: p.images || [],
+          googleDriveLinks: p.googleDriveLinks || [],
+        }))
+        setProperties(normalized)
       } else {
         setProperties(defaultProperties as Property[])
       }
