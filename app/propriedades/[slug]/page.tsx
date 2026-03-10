@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { properties as defaultProperties } from '@/lib/properties-data'
 import PropertyCalendar from '@/components/PropertyCalendar'
+import MediaGallery from '@/components/MediaGallery'
 
 const STORAGE_KEY = 'capitolio_properties'
 
@@ -34,7 +35,6 @@ export default function PropertyPage() {
   const params = useParams()
   const slug = params?.slug as string
   const [property, setProperty] = useState<Property | null>(null)
-  const [currentImage, setCurrentImage] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -80,7 +80,6 @@ export default function PropertyPage() {
   }
 
   const images = property.images?.filter(img => img.startsWith('http') || img.startsWith('data:')) || []
-  const hasImages = images.length > 0
 
   return (
     <div className="min-h-screen bg-white">
@@ -97,71 +96,9 @@ export default function PropertyPage() {
       </header>
 
       <div className="pt-20">
-        {/* Image Gallery */}
-        {hasImages ? (
-          <div className="relative h-96 bg-gray-900 overflow-hidden">
-            <img
-              src={images[currentImage]}
-              alt={property.name}
-              className="w-full h-full object-cover transition-opacity duration-500"
-            />
-            <div className="absolute inset-0 bg-black/20"></div>
-
-            {/* Navigation arrows */}
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={() => setCurrentImage(i => (i - 1 + images.length) % images.length)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition text-xl"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() => setCurrentImage(i => (i + 1) % images.length)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition text-xl"
-                >
-                  ›
-                </button>
-              </>
-            )}
-
-            {/* Dots */}
-            {images.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentImage(i)}
-                    className={`w-2 h-2 rounded-full transition ${i === currentImage ? 'bg-white' : 'bg-white/50'}`}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Thumbnail strip */}
-            {images.length > 1 && (
-              <div className="absolute bottom-0 left-0 right-0 flex gap-1 p-2 bg-black/30">
-                {images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentImage(i)}
-                    className={`flex-1 h-12 overflow-hidden rounded transition ${i === currentImage ? 'ring-2 ring-white' : 'opacity-60 hover:opacity-80'}`}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-96 bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center relative">
-            <div className="absolute inset-0 bg-black/20"></div>
-            <div className="relative z-10 text-center text-white">
-              <p className="text-xl">📸 Fotos em breve</p>
-              <p className="text-sm mt-2 opacity-80">Imagens serão adicionadas em breve</p>
-            </div>
-          </div>
-        )}
+        <div className="container mx-auto px-4 py-8">
+          <MediaGallery images={images} propertyName={property.name} />
+        </div>
 
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-3 gap-12">
