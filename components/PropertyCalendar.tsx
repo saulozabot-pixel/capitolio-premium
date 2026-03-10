@@ -63,23 +63,21 @@ export default function PropertyCalendar({
   return (
     <div className={`bg-white rounded-xl p-2 border border-blue-50 shadow-sm ${className}`}>
       <style>{`
-        .rdp {
-          --rdp-accent-color: #22c55e;
-          --rdp-background-color: #f0fdf4;
+        .rdp-root {
+          --rdp-accent-color: #22c55e !important;
+          --rdp-range_start-date-background-color: #22c55e !important;
+          --rdp-range_end-date-background-color: #22c55e !important;
+          --rdp-range_middle-background-color: #dcfce7 !important;
+          --rdp-range_middle-font-color: #166534 !important;
           margin: 0;
         }
-        .rdp-day_selected, .rdp-day_selected:focus-visible, .rdp-day_selected:hover {
-          background-color: var(--rdp-accent-color) !important;
+        
+        /* Selected days text color */
+        .rdp-day_selected {
           color: white !important;
         }
-        .rdp-day_selected.rdp-day_range_middle {
-          background-color: #dcfce7 !important;
-          color: #166534 !important;
-        }
-        .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
-          background-color: var(--rdp-background-color);
-        }
-        /* Style for occupied dates */
+
+        /* Occupied dates styling */
         .rdp-day_occupied:not(.rdp-day_selected) {
           background-color: #fee2e2 !important;
           color: #991b1b !important;
@@ -87,6 +85,11 @@ export default function PropertyCalendar({
           cursor: not-allowed;
           opacity: 0.8;
           border-radius: 4px;
+        }
+
+        /* Hover effect */
+        .rdp-day_button:hover:not([disabled]):not(.rdp-day_selected) {
+          background-color: #f0fdf4 !important;
         }
       `}</style>
       <DayPicker
