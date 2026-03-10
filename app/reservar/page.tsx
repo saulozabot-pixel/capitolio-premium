@@ -47,22 +47,51 @@ function ReservarForm() {
     }
   }, [dateRange])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Build WhatsApp message with reservation details
-    const prop = properties.find(p => p.id === formData.propertyId)
-    const msg = encodeURIComponent(
-      `Olá! Gostaria de confirmar minha reserva:\n\n` +
-      `🏡 Propriedade: ${prop?.name || formData.propertyId}\n` +
-      `📅 Check-in: ${formData.checkIn}\n` +
-      `📅 Check-out: ${formData.checkOut}\n` +
-      `👥 Hóspedes: ${formData.guests}\n` +
-      `👤 Nome: ${formData.name}\n` +
-      `📧 E-mail: ${formData.email}\n` +
-      `📱 Telefone: ${formData.phone}\n` +
-      (formData.notes ? `📝 Obs: ${formData.notes}` : '')
-    )
-    window.open(`https://wa.me/5535999999999?text=${msg}`, '_blank')
+    setLoading(true)
+    setError(null)
+
+    try {
+      // 1. Save booking to database
+      const response = await fetch('/api/reservar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+
+      if (!response.ok) {
+        const errData = await response.json()
+        throw new Error(errData.error || 'Erro ao realizar reserva')
+      }
+
+      // 2. Build WhatsApp message with reservation details
+      const prop = properties.find(p => p.id === formData.propertyId)
+      const msg = encodeURIComponent(
+        `Olá! Gostaria de confirmar minha reserva:\n\n` +
+        `🏡 Propriedade: ${prop?.name || formData.propertyId}\n` +
+        `📅 Check-in: ${formData.checkIn}\n` +
+        `📅 Check-out: ${formData.checkOut}\n` +
+        `👥 Hóspedes: ${formData.guests}\n` +
+        `👤 Nome: ${formData.name}\n` +
+        `📧 E-mail: ${formData.email}\n` +
+        `📱 Telefone: ${formData.phone}\n` +
+        (formData.notes ? `📝 Obs: ${formData.notes}` : '')
+      )
+      window.open(`https://wa.me/5535999999999?text=${msg}`, '_blank')
+      
+      // Navigate to success or home
+      setStep(3)
+    } catch (err) {
+      const error = err as Error
+      setError(error.message || 'Erro desconhecido')
+      console.error('Reservation error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const selectedProperty = properties.find(p => p.id === formData.propertyId)
@@ -305,19 +334,35 @@ function ReservarForm() {
                     </div>
                   </div>
 
+                  {error && (
+                    <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 text-sm flex items-center gap-2">
+                      <span className="text-xl">⚠️</span>
+                      {error}
+                    </div>
+                  )}
+
                   <div className="flex gap-4">
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="flex-1 bg-gray-200 text-gray-800 py-4 rounded-full font-semibold hover:bg-gray-300 transition"
+                      disabled={loading}
+                      className="flex-1 bg-gray-200 text-gray-800 py-4 rounded-full font-semibold hover:bg-gray-300 transition disabled:opacity-50"
                     >
                       Voltar
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition"
+                      disabled={loading}
+                      className="flex-1 bg-blue-900 text-white py-4 rounded-full font-semibold hover:bg-blue-800 transition flex items-center justify-center gap-2 disabled:opacity-75"
                     >
-                      Confirmar Reserva
+                      {loading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Processando...
+                        </>
+                      ) : (
+                        'Confirmar Reserva'
+                      )}
                     </button>
                   </div>
                 </div>

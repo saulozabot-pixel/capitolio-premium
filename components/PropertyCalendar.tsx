@@ -34,6 +34,7 @@ export default function PropertyCalendar({
         const res = await fetch(`/api/properties/${slug}/availability`)
         if (res.ok) {
           const data = await res.json()
+          console.log('Occupied ranges fetched:', data)
           setOccupiedRanges(data)
         }
       } catch (error) {

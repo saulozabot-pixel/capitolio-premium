@@ -20,7 +20,7 @@ export async function GET(
     const bookings = await prisma.booking.findMany({
       where: {
         propertyId: property.id,
-        status: { in: ['confirmed', 'paid', 'completed'] },
+        status: { in: ['confirmed', 'paid', 'completed', 'pending'] },
         checkOut: { gte: new Date() }
       },
       select: {
