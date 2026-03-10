@@ -31,7 +31,7 @@ export default function PropertyCalendar({
   useEffect(() => {
     async function fetchAvailability() {
       try {
-        const res = await fetch(`/api/properties/${slug}/availability`)
+        const res = await fetch(`/api/properties/${slug}/availability`, { cache: 'no-store' })
         if (res.ok) {
           const data = await res.json()
           console.log('Occupied ranges fetched:', data)
