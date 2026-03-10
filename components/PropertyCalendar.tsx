@@ -103,11 +103,11 @@ export default function PropertyCalendar({
       />
       <div className="mt-4 px-2 flex items-center gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-900 rounded-full"></div>
+          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
           <span>Selecionado</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-gray-200 rounded-full"></div>
+          <div className="w-3 h-3 bg-red-400 rounded-full"></div>
           <span>Ocupado</span>
         </div>
       </div>
