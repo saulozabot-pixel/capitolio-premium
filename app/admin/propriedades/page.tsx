@@ -110,7 +110,6 @@ function PropertyModal({
   const [uploadedImages, setUploadedImages] = useState<string[]>(
     (property.images || []).filter(img => img.startsWith('data:'))
   )
-  const [driveText, setDriveText] = useState((property.googleDriveLinks || []).join('\n'))
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -155,7 +154,7 @@ function PropertyModal({
       ...form,
       amenities: amenitiesText.split('\n').map(s => s.trim()).filter(Boolean),
       images: allImages,
-      googleDriveLinks: driveText.split('\n').map(s => s.trim()).filter(Boolean),
+      googleDriveLinks: form.googleDriveLinks || [],
       slug: form.slug || form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
       id: form.id || form.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
     }

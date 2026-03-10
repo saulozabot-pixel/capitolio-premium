@@ -211,7 +211,7 @@ export default function HomePage() {
                 Capitólio, o Paraíso dos Cânions
               </h2>
               <p className="text-gray-600 mb-4 text-lg leading-relaxed">
-                Conhecida como a "Chapada Diamantina de Minas Gerais", Capitólio encanta com seus cânions de arenito vermelho e as águas esverdeadas da Represa de Furnas.
+                Conhecida como a &quot;Chapada Diamantina de Minas Gerais&quot;, Capitólio encanta com seus cânions de arenito vermelho e as águas esverdeadas da Represa de Furnas.
               </p>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                 A apenas 4 horas de São Paulo e Belo Horizonte, é o destino perfeito para quem busca natureza exuberante com todo o conforto e luxo.

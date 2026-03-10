@@ -24,7 +24,6 @@ const slides = [
 
 export default function HeroSlideshow() {
   const [current, setCurrent] = useState(0)
-  const [loaded, setLoaded] = useState<boolean[]>(new Array(slides.length).fill(false))
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,14 +31,6 @@ export default function HeroSlideshow() {
     }, 5000)
     return () => clearInterval(timer)
   }, [])
-
-  const handleLoaded = (index: number) => {
-    setLoaded(prev => {
-      const next = [...prev]
-      next[index] = true
-      return next
-    })
-  }
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -54,7 +45,6 @@ export default function HeroSlideshow() {
             src={slide.url}
             alt={slide.alt}
             className="w-full h-full object-cover"
-            onLoad={() => handleLoaded(index)}
           />
         </div>
       ))}

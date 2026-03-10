@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { properties as defaultProperties } from '@/lib/properties-data'
+import PropertyCalendar from '@/components/PropertyCalendar'
 
 const STORAGE_KEY = 'capitolio_properties'
 
@@ -225,11 +226,16 @@ export default function PropertyPage() {
                 </div>
 
                 {property.cleaningFee > 0 && (
-                  <div className="flex justify-between text-sm text-gray-600 mb-4 pb-4 border-b">
+                  <div className="flex justify-between text-sm text-gray-600 mb-6 pb-4 border-b">
                     <span>Taxa de limpeza</span>
                     <span>R$ {property.cleaningFee.toLocaleString('pt-BR')}</span>
                   </div>
                 )}
+
+                <div className="mb-6">
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Disponibilidade</p>
+                  <PropertyCalendar slug={slug} />
+                </div>
 
                 <Link
                   href={`/reservar?property=${property.id}`}
