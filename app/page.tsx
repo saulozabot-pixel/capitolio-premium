@@ -229,7 +229,7 @@ export default function HomePage() {
             </div>
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
+                src="/images/geral/mirante-dos-canions-capitolio-mg.jpg"
                 alt="Cânions de Capitólio"
                 className="rounded-2xl shadow-xl w-full h-80 object-cover"
               />
@@ -276,13 +276,11 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Momentos Inesquecíveis</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80" alt="Piscina" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
-            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&q=80" alt="Villa" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
-            <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400&q=80" alt="Beira d'água" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
-            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&q=80" alt="Mansão" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
-            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80" alt="Cânions" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition col-span-2" />
-            <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=400&q=80" alt="Pôr do sol" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
-            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Quarto luxo" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
+            <img src="/images/geral/canions-de-capitolio-mg.jpg" alt="Cânions de Capitólio" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition col-span-2" />
+            <img src="/images/geral/escarpas-do-lago-capitolio-mg.jpg" alt="Escarpas do Lago" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
+            <img src="/images/geral/lagoa-azul-capitolio-mg.jpg" alt="Lagoa Azul" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition" />
+            <img src="/images/geral/lagoa-azul-capitolio-2.jpg" alt="Lagoa Azul Capitólio" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition col-span-2" />
+            <img src="/images/geral/mirante-dos-canions-capitolio-mg.jpg" alt="Mirante dos Cânions" className="rounded-xl h-48 w-full object-cover hover:opacity-90 transition col-span-2" />
           </div>
         </div>
       </section>
