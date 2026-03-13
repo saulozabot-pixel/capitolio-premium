@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import AdminNav from '@/components/AdminNav'
 import Link from 'next/link'
+import { properties as staticProperties } from '@/lib/properties-data'
 
 type Property = {
   id: string
@@ -137,7 +138,7 @@ function PropertyModal({ property, title, onSave, onClose }: {
   const [form, setForm] = useState<Property>({ ...property })
   const [amenitiesText, setAmenitiesText] = useState((property.amenities || []).join('\n'))
   const [urlImagesText, setUrlImagesText] = useState(
-    (property.images || []).filter(img => img.startsWith('http')).join('\n')
+    (property.images || []).filter(img => img.startsWith('http') || img.startsWith('/')).join('\n')
   )
   const [uploadedImages, setUploadedImages] = useState<string[]>(
     (property.images || []).filter(img => img.startsWith('data:'))
@@ -174,7 +175,7 @@ function PropertyModal({ property, title, onSave, onClose }: {
     onSave(updated)
   }
 
-  const urlImageList = urlImagesText.split('\n').filter(u => u.trim().startsWith('http'))
+  const urlImageList = urlImagesText.split('\n').filter(u => u.trim().startsWith('http') || u.trim().startsWith('/'))
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
@@ -352,7 +353,17 @@ export default function AdminPropriedades() {
   useEffect(() => {
     fetch('/api/admin/properties')
       .then(r => r.json())
-      .then(data => { setProperties(Array.isArray(data) ? data : []); setLoading(false) })
+      .then(data => {
+        const props = Array.isArray(data) ? data : []
+        // Always use images from static data (source of truth)
+        const merged = props.map((p: Property) => {
+          const staticProp = staticProperties.find(s => s.slug === p.slug)
+          if (staticProp?.images?.length) return { ...p, images: staticProp.images }
+          return p
+        })
+        setProperties(merged)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [])
 
@@ -411,8 +422,8 @@ export default function AdminPropriedades() {
 
   const getImageSrc = (p: Property) => {
     const first = p.images?.[0]
-    if (first?.startsWith('http') || first?.startsWith('data:')) return first
-    return 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80'
+    if (first?.startsWith('http') || first?.startsWith('data:') || first?.startsWith('/')) return first
+    return '/images/rancho-beira-represa/rancho-01.jpg'
   }
 
   const emptyProperty = (): Property => ({
