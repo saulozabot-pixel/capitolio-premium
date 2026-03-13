@@ -5,20 +5,24 @@ import Link from 'next/link'
 
 const slides = [
   {
-    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80',
-    alt: 'Represa de Capitólio - Cânions e Lago'
+    url: '/images/geral/canions-de-capitolio-mg.jpg',
+    alt: 'Cânions de Capitólio - Vista aérea'
   },
   {
-    url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80',
-    alt: 'Villa de Luxo com Piscina'
+    url: '/images/geral/escarpas-do-lago-capitolio-mg.jpg',
+    alt: 'Escarpas do Lago - Capitólio MG'
   },
   {
-    url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1920&q=80',
-    alt: 'Resort com Vista para o Lago'
+    url: '/images/geral/lagoa-azul-capitolio-mg.jpg',
+    alt: 'Lagoa Azul - Capitólio MG'
   },
   {
-    url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80',
-    alt: 'Mansão Exclusiva'
+    url: '/images/geral/lagoa-azul-capitolio-2.jpg',
+    alt: 'Lagoa Azul - Capitólio MG'
+  },
+  {
+    url: '/images/geral/mirante-dos-canions-capitolio-mg.jpg',
+    alt: 'Mirante dos Cânions - Capitólio MG'
   },
 ]
 
