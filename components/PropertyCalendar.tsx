@@ -79,12 +79,13 @@ export default function PropertyCalendar({
         }
 
         /* Occupied dates styling */
-        .rdp-day_occupied:not(.rdp-day_selected) {
+        .rdp-day_occupied .rdp-day_button,
+        .rdp-day_occupied[disabled] .rdp-day_button {
           background-color: #fee2e2 !important;
           color: #991b1b !important;
           text-decoration: line-through;
           cursor: not-allowed;
-          opacity: 0.8;
+          opacity: 1 !important;
           border-radius: 4px;
         }
 
@@ -100,6 +101,14 @@ export default function PropertyCalendar({
         locale={ptBR}
         disabled={[{ before: new Date() }, ...disabledDays]}
         modifiers={{ occupied: disabledDays }}
+        modifiersStyles={{
+          occupied: {
+            backgroundColor: '#fee2e2',
+            color: '#991b1b',
+            textDecoration: 'line-through',
+            opacity: 1,
+          }
+        }}
         showOutsideDays
       />
       <div className="mt-4 px-2 flex items-center gap-4 text-xs text-gray-500">
