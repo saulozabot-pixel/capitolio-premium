@@ -1,34 +1,21 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import HeroSlideshow from '@/components/HeroSlideshow'
+import { properties as staticProperties } from '@/lib/properties-data'
 
-const properties = [
-  {
-    id: 'rancho-beira-represa',
-    slug: 'rancho-beira-represa',
-    name: 'Rancho à Beira da Represa',
-    shortDesc: 'Mansão exclusiva com acesso direto à represa',
-    bedrooms: 5,
-    bathrooms: 6,
-    maxGuests: 12,
-    pricePerNight: 2500,
-    image: '/images/rancho-beira-represa/rancho-01.jpg',
-    badge: 'Destaque',
-    badgeColor: 'bg-blue-900',
-  },
-  {
-    id: 'casa-proxima',
-    slug: 'casa-premium-capitolio',
-    name: 'Casa Premium Capitólio',
-    shortDesc: 'Casa moderna próxima à represa com todo conforto',
-    bedrooms: 4,
-    bathrooms: 5,
-    maxGuests: 10,
-    pricePerNight: 2200,
-    image: '/images/casa-proxima/casa-09.jpg',
-    badge: 'Popular',
-    badgeColor: 'bg-green-600',
-  },
-]
+const STORAGE_KEY = 'capitolio_properties'
+
+const BADGES: Record<string, { badge: string; badgeColor: string }> = {
+  'rancho-beira-represa': { badge: 'Destaque', badgeColor: 'bg-blue-900' },
+  'casa-proxima': { badge: 'Popular', badgeColor: 'bg-green-600' },
+}
+
+const COVERS: Record<string, string> = {
+  'rancho-beira-represa': '/images/rancho-beira-represa/rancho-01.jpg',
+  'casa-proxima': '/images/casa-proxima/casa-09.jpg',
+}
 
 const services = [
   {
@@ -70,6 +57,49 @@ const services = [
 ]
 
 export default function HomePage() {
+  const [displayProperties, setDisplayProperties] = useState(
+    staticProperties.filter(p => p.active).map(p => ({
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      shortDesc: p.shortDesc,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      maxGuests: p.maxGuests,
+      pricePerNight: p.pricePerNight,
+      image: COVERS[p.id] ?? p.images?.[0] ?? '',
+      badge: BADGES[p.id]?.badge ?? '',
+      badgeColor: BADGES[p.id]?.badgeColor ?? 'bg-blue-900',
+    }))
+  )
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const stored = JSON.parse(saved)
+        setDisplayProperties(
+          staticProperties.filter(p => p.active).map(p => {
+            const override = stored.find((s: { id: string }) => s.id === p.id)
+            return {
+              id: p.id,
+              slug: p.slug,
+              name: override?.name ?? p.name,
+              shortDesc: override?.shortDesc ?? p.shortDesc,
+              bedrooms: override?.bedrooms ?? p.bedrooms,
+              bathrooms: override?.bathrooms ?? p.bathrooms,
+              maxGuests: override?.maxGuests ?? p.maxGuests,
+              pricePerNight: override?.pricePerNight ?? p.pricePerNight,
+              image: COVERS[p.id] ?? p.images?.[0] ?? '',
+              badge: BADGES[p.id]?.badge ?? '',
+              badgeColor: BADGES[p.id]?.badgeColor ?? 'bg-blue-900',
+            }
+          })
+        )
+      }
+    } catch {}
+  }, [])
+
   return (
     <div className="min-h-screen">
       {/* Header/Navbar */}
@@ -143,7 +173,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {properties.map((property) => (
+            {displayProperties.map((property) => (
               <div key={property.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
                 {/* Property Image */}
                 <div className="relative h-64 overflow-hidden">
