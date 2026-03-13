@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AdminNav from '@/components/AdminNav'
 
 type Servico = {
@@ -14,68 +14,6 @@ type Servico = {
   emoji: string
 }
 
-const initialServicos: Servico[] = [
-  {
-    id: '1',
-    type: 'lancha',
-    name: 'Passeio de Lancha',
-    description: 'Explore os cânions e praias da represa com lancha privativa',
-    price: 800,
-    unit: 'hora',
-    active: true,
-    emoji: '🚤',
-  },
-  {
-    id: '2',
-    type: 'jetski',
-    name: 'Jet Ski',
-    description: 'Adrenalina e diversão nas águas cristalinas de Capitólio',
-    price: 400,
-    unit: 'hora',
-    active: true,
-    emoji: '🏄',
-  },
-  {
-    id: '3',
-    type: 'chef',
-    name: 'Personal Chef',
-    description: 'Chef particular para preparar refeições gourmet na casa',
-    price: 1200,
-    unit: 'dia',
-    active: true,
-    emoji: '👨‍🍳',
-  },
-  {
-    id: '4',
-    type: 'transfer',
-    name: 'Transfer Aeroporto',
-    description: 'Transporte confortável do aeroporto até sua mansão',
-    price: 350,
-    unit: 'trecho',
-    active: true,
-    emoji: '🚗',
-  },
-  {
-    id: '5',
-    type: 'massagem',
-    name: 'Massagem Relaxante',
-    description: 'Massagem profissional no conforto da sua mansão',
-    price: 250,
-    unit: 'sessão',
-    active: false,
-    emoji: '💆',
-  },
-  {
-    id: '6',
-    type: 'decoracao',
-    name: 'Decoração Especial',
-    description: 'Decoração romântica ou temática para ocasiões especiais',
-    price: 600,
-    unit: 'evento',
-    active: true,
-    emoji: '🌹',
-  },
-]
 
 const unitOptions = ['hora', 'dia', 'sessão', 'trecho', 'evento', 'pessoa', 'pacote']
 
@@ -255,7 +193,8 @@ function ServicoModal({
 
 // ─── Página Principal ─────────────────────────────────────────────────────────
 export default function AdminServicos() {
-  const [servicos, setServicos] = useState<Servico[]>(initialServicos)
+  const [servicos, setServicos] = useState<Servico[]>([])
+  const [loading, setLoading] = useState(true)
   const [editingServico, setEditingServico] = useState<Servico | null>(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const [toast, setToast] = useState('')
@@ -265,29 +204,69 @@ export default function AdminServicos() {
     setTimeout(() => setToast(''), 3000)
   }
 
-  const toggleActive = (id: string) => {
-    setServicos(prev =>
-      prev.map(s => s.id === id ? { ...s, active: !s.active } : s)
-    )
+  useEffect(() => {
+    fetch('/api/admin/services')
+      .then(r => r.json())
+      .then(data => {
+        setServicos(Array.isArray(data) ? data.map((s: Servico & { price: number | string }) => ({ ...s, price: Number(s.price) })) : [])
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const toggleActive = async (id: string) => {
+    const servico = servicos.find(s => s.id === id)
+    if (!servico) return
+    const res = await fetch(`/api/admin/services/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: !servico.active }),
+    })
+    if (res.ok) {
+      const saved = await res.json()
+      setServicos(prev => prev.map(s => s.id === id ? { ...saved, price: Number(saved.price) } : s))
+    }
   }
 
-  const handleSaveEdit = (updated: Servico) => {
-    setServicos(prev => prev.map(s => s.id === updated.id ? updated : s))
-    setEditingServico(null)
-    showToast('✅ Serviço atualizado!')
+  const handleSaveEdit = async (updated: Servico) => {
+    const res = await fetch(`/api/admin/services/${updated.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    })
+    if (res.ok) {
+      const saved = await res.json()
+      setServicos(prev => prev.map(s => s.id === saved.id ? { ...saved, price: Number(saved.price) } : s))
+      setEditingServico(null)
+      showToast('✅ Serviço atualizado!')
+    } else {
+      showToast('❌ Erro ao salvar.')
+    }
   }
 
-  const handleAdd = (novo: Servico) => {
-    const newId = String(Date.now())
-    setServicos(prev => [...prev, { ...novo, id: newId }])
-    setShowAddModal(false)
-    showToast('✅ Novo serviço adicionado!')
+  const handleAdd = async (novo: Servico) => {
+    const res = await fetch('/api/admin/services', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(novo),
+    })
+    if (res.ok) {
+      const saved = await res.json()
+      setServicos(prev => [...prev, { ...saved, price: Number(saved.price) }])
+      setShowAddModal(false)
+      showToast('✅ Novo serviço adicionado!')
+    } else {
+      showToast('❌ Erro ao criar serviço.')
+    }
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Remover este serviço?')) return
-    setServicos(prev => prev.filter(s => s.id !== id))
-    showToast('🗑️ Serviço removido.')
+    const res = await fetch(`/api/admin/services/${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setServicos(prev => prev.filter(s => s.id !== id))
+      showToast('🗑️ Serviço removido.')
+    }
   }
 
   const totalAtivos = servicos.filter(s => s.active).length
@@ -341,6 +320,16 @@ export default function AdminServicos() {
 
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading && (
+            <div className="col-span-3 flex justify-center py-16">
+              <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+          {!loading && servicos.length === 0 && (
+            <div className="col-span-3 text-center py-16 text-gray-400">
+              Nenhum serviço cadastrado. Clique em &quot;+ Novo Serviço&quot; para começar.
+            </div>
+          )}
           {servicos.map((servico) => (
             <div
               key={servico.id}
