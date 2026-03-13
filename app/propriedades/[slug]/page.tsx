@@ -158,7 +158,7 @@ export default function PropertyPage() {
                     <span className="text-3xl font-bold text-blue-900">
                       R$ {property.pricePerNight.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-gray-600 text-sm">/pessoa</span>
+                    <span className="text-gray-600 text-sm">/noite</span>
                   </div>
                 </div>
 
