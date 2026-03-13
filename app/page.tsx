@@ -304,7 +304,7 @@ export default function HomePage() {
               <h3 className="text-xl font-bold mb-2">WhatsApp</h3>
               <p className="text-blue-200 mb-4 text-sm">Atendimento rápido e personalizado</p>
               <a
-                href="https://wa.me/5535999999999"
+                href="https://wa.me/5511971603232"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 text-white px-6 py-2 rounded-full font-semibold hover:bg-green-600 transition inline-block"

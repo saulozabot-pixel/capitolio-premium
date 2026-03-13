@@ -182,7 +182,7 @@ export default function PropertyPage() {
                 </Link>
 
                 <a
-                  href="https://wa.me/5500000000000"
+                  href="https://wa.me/5511971603232"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center bg-green-500 text-white py-4 rounded-full font-semibold hover:bg-green-600 transition"

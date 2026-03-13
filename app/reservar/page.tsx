@@ -81,7 +81,7 @@ function ReservarForm() {
         `📱 Telefone: ${formData.phone}\n` +
         (formData.notes ? `📝 Obs: ${formData.notes}` : '')
       )
-      window.open(`https://wa.me/5535999999999?text=${msg}`, '_blank')
+      window.open(`https://wa.me/5511971603232?text=${msg}`, '_blank')
       
       // Navigate to success or home
       setStep(3)
