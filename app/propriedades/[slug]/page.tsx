@@ -45,6 +45,11 @@ export default function PropertyPage() {
         const props: Property[] = JSON.parse(saved)
         const found = props.find(p => p.slug === slug)
         if (found) {
+          // Always use images from static data (source of truth)
+          const staticProp = defaultProperties.find(p => p.slug === slug)
+          if (staticProp?.images?.length) {
+            found.images = staticProp.images
+          }
           setProperty(found)
           setLoading(false)
           return
