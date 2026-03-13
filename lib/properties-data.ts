@@ -89,6 +89,7 @@ export const properties = [
       "Estacionamento privativo"
     ],
     images: [
+      "/images/casa-proxima/casa-09.jpg",
       "/images/casa-proxima/casa-01.jpg",
       "/images/casa-proxima/casa-02.jpg",
       "/images/casa-proxima/casa-03.jpg",
@@ -97,7 +98,6 @@ export const properties = [
       "/images/casa-proxima/casa-06.jpg",
       "/images/casa-proxima/casa-07.jpg",
       "/images/casa-proxima/casa-08.jpg",
-      "/images/casa-proxima/casa-09.jpg",
       "/images/casa-proxima/casa-10.jpg",
       "/images/casa-proxima/casa-11.jpg",
       "/images/casa-proxima/casa-12.jpg",

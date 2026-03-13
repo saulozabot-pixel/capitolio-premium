@@ -24,7 +24,7 @@ const properties = [
     bathrooms: 5,
     maxGuests: 10,
     pricePerNight: 2200,
-    image: '/images/casa-proxima/casa-01.jpg',
+    image: '/images/casa-proxima/casa-09.jpg',
     badge: 'Popular',
     badgeColor: 'bg-green-600',
   },
