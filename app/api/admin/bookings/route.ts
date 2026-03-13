@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// GET /api/admin/bookings — lista todas as reservas
-export async function GET() {
+// GET /api/admin/bookings — lista todas as reservas (ou filtra por propertyId)
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const propertyId = searchParams.get('propertyId')
     const bookings = await prisma.booking.findMany({
       include: { property: true },
       orderBy: { createdAt: 'desc' },
+      where: propertyId ? { propertyId } : undefined,
     })
 
     const result = bookings.map(b => ({
