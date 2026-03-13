@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AdminNav from '@/components/AdminNav'
 
 type Reserva = {
@@ -18,61 +18,6 @@ type Reserva = {
   notes?: string
 }
 
-const initialReservas: Reserva[] = [
-  {
-    id: '1',
-    guestName: 'João Silva',
-    guestEmail: 'joao@email.com',
-    guestPhone: '(35) 99999-0001',
-    property: 'Rancho à Beira da Represa',
-    checkIn: '2026-03-15',
-    checkOut: '2026-03-18',
-    guests: 8,
-    totalPrice: 8000,
-    status: 'confirmed',
-    paymentStatus: 'paid',
-    notes: 'Aniversário de casamento. Solicita decoração especial.',
-  },
-  {
-    id: '2',
-    guestName: 'Maria Santos',
-    guestEmail: 'maria@email.com',
-    guestPhone: '(35) 99999-0002',
-    property: 'Casa Premium Capitólio',
-    checkIn: '2026-03-20',
-    checkOut: '2026-03-22',
-    guests: 6,
-    totalPrice: 4800,
-    status: 'pending',
-    paymentStatus: 'pending',
-  },
-  {
-    id: '3',
-    guestName: 'Carlos Oliveira',
-    guestEmail: 'carlos@email.com',
-    guestPhone: '(35) 99999-0003',
-    property: 'Rancho à Beira da Represa',
-    checkIn: '2026-03-25',
-    checkOut: '2026-03-30',
-    guests: 12,
-    totalPrice: 13000,
-    status: 'confirmed',
-    paymentStatus: 'paid',
-  },
-  {
-    id: '4',
-    guestName: 'Ana Pereira',
-    guestEmail: 'ana@email.com',
-    guestPhone: '(35) 99999-0004',
-    property: 'Casa Premium Capitólio',
-    checkIn: '2026-04-05',
-    checkOut: '2026-04-08',
-    guests: 4,
-    totalPrice: 7200,
-    status: 'pending',
-    paymentStatus: 'pending',
-  },
-]
 
 const statusLabels: Record<string, { label: string; className: string }> = {
   confirmed: { label: 'Confirmada', className: 'bg-green-100 text-green-800' },
@@ -381,7 +326,8 @@ function ReservaFormModal({
 
 // ─── Página Principal ─────────────────────────────────────────────────────────
 export default function AdminReservas() {
-  const [reservas, setReservas] = useState<Reserva[]>(initialReservas)
+  const [reservas, setReservas] = useState<Reserva[]>([])
+  const [loading, setLoading] = useState(true)
   const [viewingReserva, setViewingReserva] = useState<Reserva | null>(null)
   const [editingReserva, setEditingReserva] = useState<Reserva | null>(null)
   const [showAddModal, setShowAddModal] = useState(false)
@@ -393,32 +339,70 @@ export default function AdminReservas() {
     setTimeout(() => setToast(''), 3000)
   }
 
-  const handleConfirm = (id: string) => {
-    setReservas(prev =>
-      prev.map(r => r.id === id ? { ...r, status: 'confirmed' as const } : r)
-    )
-    showToast('✅ Reserva confirmada!')
+  // Carrega reservas do banco ao montar
+  useEffect(() => {
+    fetch('/api/admin/bookings')
+      .then(r => r.json())
+      .then(data => { setReservas(data); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const handleConfirm = async (id: string) => {
+    const res = await fetch(`/api/admin/bookings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'confirmed' }),
+    })
+    if (res.ok) {
+      const updated = await res.json()
+      setReservas(prev => prev.map(r => r.id === id ? updated : r))
+      showToast('✅ Reserva confirmada!')
+    }
   }
 
-  const handleCancel = (id: string) => {
+  const handleCancel = async (id: string) => {
     if (!confirm('Cancelar esta reserva?')) return
-    setReservas(prev =>
-      prev.map(r => r.id === id ? { ...r, status: 'cancelled' as const } : r)
-    )
-    showToast('🚫 Reserva cancelada.')
+    const res = await fetch(`/api/admin/bookings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'cancelled' }),
+    })
+    if (res.ok) {
+      const updated = await res.json()
+      setReservas(prev => prev.map(r => r.id === id ? updated : r))
+      showToast('🚫 Reserva cancelada.')
+    }
   }
 
-  const handleSaveEdit = (updated: Reserva) => {
-    setReservas(prev => prev.map(r => r.id === updated.id ? updated : r))
-    setEditingReserva(null)
-    showToast('✅ Reserva atualizada!')
+  const handleSaveEdit = async (updated: Reserva) => {
+    const res = await fetch(`/api/admin/bookings/${updated.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    })
+    if (res.ok) {
+      const saved = await res.json()
+      setReservas(prev => prev.map(r => r.id === saved.id ? saved : r))
+      setEditingReserva(null)
+      showToast('✅ Reserva atualizada!')
+    }
   }
 
-  const handleAdd = (nova: Reserva) => {
-    const newId = String(Date.now())
-    setReservas(prev => [...prev, { ...nova, id: newId }])
-    setShowAddModal(false)
-    showToast('✅ Nova reserva adicionada!')
+  const handleAdd = async (nova: Reserva) => {
+    const res = await fetch('/api/admin/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(nova),
+    })
+    if (res.ok) {
+      const saved = await res.json()
+      setReservas(prev => [saved, ...prev])
+      setShowAddModal(false)
+      showToast('✅ Nova reserva adicionada!')
+    } else {
+      const err = await res.json()
+      showToast(`❌ ${err.error}`)
+    }
   }
 
   const filtered = filterStatus === 'all'
@@ -514,7 +498,14 @@ export default function AdminReservas() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.length === 0 && (
+                {loading && (
+                  <tr>
+                    <td colSpan={9} className="text-center py-12 text-gray-400">
+                      Carregando reservas...
+                    </td>
+                  </tr>
+                )}
+                {!loading && filtered.length === 0 && (
                   <tr>
                     <td colSpan={9} className="text-center py-12 text-gray-400">
                       Nenhuma reserva encontrada.
