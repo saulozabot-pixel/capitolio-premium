@@ -79,7 +79,7 @@ export default function PropertyPage() {
     )
   }
 
-  const images = property.images?.filter(img => img.startsWith('http') || img.startsWith('data:')) || []
+  const images = property.images?.filter(img => img.startsWith('http') || img.startsWith('data:') || img.startsWith('/')) || []
 
   return (
     <div className="min-h-screen bg-white">

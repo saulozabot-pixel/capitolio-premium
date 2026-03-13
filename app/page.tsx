@@ -11,7 +11,7 @@ const properties = [
     bathrooms: 6,
     maxGuests: 12,
     pricePerNight: 2500,
-    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
+    image: '/images/rancho-beira-represa/rancho-01.jpg',
     badge: 'Destaque',
     badgeColor: 'bg-blue-900',
   },
